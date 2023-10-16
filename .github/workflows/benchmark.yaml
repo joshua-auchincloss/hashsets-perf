@@ -1,25 +1,30 @@
-name: Benchmark Hash Collections
+name: codspeed-benchmarks
+
 on:
   push:
     branches:
-      - main
-      - 202*
-
-permissions:
-  contents: write
-  deployments: write
-
-concurrency:
-  group: bench-${{ github.ref }}
-  cancel-in-progress: true
+      - "main"
+  pull_request:
+  workflow_dispatch:
 
 jobs:
-  runBenchmark:
-    name: Benchmark
+  benchmarks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: boa-dev/criterion-compare-action@v3
+
+      - name: Setup rust toolchain, cache and cargo-codspeed binary
+        uses: moonrepo/setup-rust@v0
         with:
-          branchName: ${{ github.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          channel: stable
+          cache-target: release
+          bins: cargo-codspeed
+
+      - name: Build the benchmark target(s)
+        run: cargo codspeed build
+
+      - name: Run the benchmarks
+        uses: CodSpeedHQ/action@v1
+        with:
+          run: cargo codspeed run
+          token: ${{ secrets.CODSPEED_TOKEN }}

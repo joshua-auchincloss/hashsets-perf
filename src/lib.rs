@@ -1,5 +1,3 @@
-#![feature(test)]
-
 use seahash::SeaHasher;
 use std::{collections::HashMap, hash::BuildHasher};
 

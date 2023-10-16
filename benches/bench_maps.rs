@@ -1,11 +1,9 @@
 use bench_hash_2023::SeaHash;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use codspeed_criterion_compat::{black_box, criterion_group, criterion_main, Criterion};
 use std::{
     collections::{hash_map::RandomState, HashMap},
     hash::{BuildHasher, Hash},
 };
-
-// use std::ve
 
 macro_rules! bench_for {
     ($typ: ident, $k: expr, $v: expr) => {
