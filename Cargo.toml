@@ -1,0 +1,32 @@
+[package]
+name = "bench_hash_2023"
+publish = false
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.73.0"
+authors = ["Joshua A. <joshua.auchincloss@proton.me>"]
+homepage = ""
+documentation = ""
+repository = ""
+description = ""
+readme = "README.md"
+license = "MIT"
+
+[features]
+
+[lib]
+
+[dependencies]
+seahash = "4.1.0"
+
+[dev-dependencies]
+paste = "1.0.14"
+ahash = "0.8.3"
+criterion = { version = "0.4", features = ["html_reports"] }
+
+[profile.bench]
+lto = "fat"
+
+[[bench]]
+name = "bench_maps"
+harness = false
