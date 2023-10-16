@@ -52,81 +52,81 @@ macro_rules! bench_for {
                         codspeed_criterion_compat::BatchSize::SmallInput,
                     )
                 });
-                c.bench_function(
-                    &name_fn("insert_exist"),
-                    |b| {
-                    b.iter_batched_ref(
-                        || {
-                            let mut h = new();
-                            insert(&mut h);
-                            h
-                        },
-                        |mut this| {
-                            insert(black_box(&mut this))
-                        },
-                        codspeed_criterion_compat::BatchSize::SmallInput,
-                    )
-                });
-                c.bench_function(
-                    &name_fn("get_noexist"),
-                    |b| {
-                    b.iter_batched_ref(
-                        || {
-                            let mut h = new();
-                            remove(&mut h);
-                            h
-                        },
-                        |this| {
-                            get(black_box(&this))
-                        },
-                        codspeed_criterion_compat::BatchSize::SmallInput,
-                    )
-                });
-                c.bench_function(
-                    &name_fn("get_exist"),
-                    |b| {
-                    b.iter_batched_ref(
-                        || {
-                            let mut h = new();
-                            insert(&mut h);
-                            h
-                        },
-                        |this| {
-                            get(black_box(&this))
-                        },
-                        codspeed_criterion_compat::BatchSize::SmallInput,
-                    )
-                });
-                c.bench_function(
-                    &name_fn("remove_noexist"),
-                    |b| {
-                    b.iter_batched_ref(
-                        || {
-                            let mut h = new();
-                            remove(&mut h);
-                            h
-                        },
-                        |mut this| {
-                            remove(black_box(&mut this))
-                        },
-                        codspeed_criterion_compat::BatchSize::SmallInput,
-                    )
-                });
-                c.bench_function(
-                    &name_fn("remove_exists"),
-                    |b| {
-                    b.iter_batched_ref(
-                        || {
-                            let mut h = new();
-                            insert(&mut h);
-                            h
-                        },
-                        |mut this| {
-                            remove(black_box(&mut this))
-                        },
-                        codspeed_criterion_compat::BatchSize::SmallInput,
-                    )
-                });
+                // c.bench_function(
+                //     &name_fn("insert_exist"),
+                //     |b| {
+                //     b.iter_batched_ref(
+                //         || {
+                //             let mut h = new();
+                //             insert(&mut h);
+                //             h
+                //         },
+                //         |mut this| {
+                //             insert(black_box(&mut this))
+                //         },
+                //         codspeed_criterion_compat::BatchSize::SmallInput,
+                //     )
+                // });
+                // c.bench_function(
+                //     &name_fn("get_noexist"),
+                //     |b| {
+                //     b.iter_batched_ref(
+                //         || {
+                //             let mut h = new();
+                //             remove(&mut h);
+                //             h
+                //         },
+                //         |this| {
+                //             get(black_box(&this))
+                //         },
+                //         codspeed_criterion_compat::BatchSize::SmallInput,
+                //     )
+                // });
+                // c.bench_function(
+                //     &name_fn("get_exist"),
+                //     |b| {
+                //     b.iter_batched_ref(
+                //         || {
+                //             let mut h = new();
+                //             insert(&mut h);
+                //             h
+                //         },
+                //         |this| {
+                //             get(black_box(&this))
+                //         },
+                //         codspeed_criterion_compat::BatchSize::SmallInput,
+                //     )
+                // });
+                // c.bench_function(
+                //     &name_fn("remove_noexist"),
+                //     |b| {
+                //     b.iter_batched_ref(
+                //         || {
+                //             let mut h = new();
+                //             remove(&mut h);
+                //             h
+                //         },
+                //         |mut this| {
+                //             remove(black_box(&mut this))
+                //         },
+                //         codspeed_criterion_compat::BatchSize::SmallInput,
+                //     )
+                // });
+                // c.bench_function(
+                //     &name_fn("remove_exists"),
+                //     |b| {
+                //     b.iter_batched_ref(
+                //         || {
+                //             let mut h = new();
+                //             insert(&mut h);
+                //             h
+                //         },
+                //         |mut this| {
+                //             remove(black_box(&mut this))
+                //         },
+                //         codspeed_criterion_compat::BatchSize::SmallInput,
+                //     )
+                // });
             }
 
             // fn [<$kt:snake _ $vt:snake _bench_std_hashmap>](b: &mut Criterion) {
