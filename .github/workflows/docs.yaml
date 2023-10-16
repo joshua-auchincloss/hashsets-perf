@@ -32,6 +32,7 @@ jobs:
         name: Cache CI Benchmarks
         uses: actions/cache@v3
         with:
+          key: ${{ runner.os }}-${{ github.ref }}
           path: |
             ./target/criterion
 
