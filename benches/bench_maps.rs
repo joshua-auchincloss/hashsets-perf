@@ -1,16 +1,21 @@
 use bench_hash_2023::SeaHash;
 use codspeed_criterion_compat::{black_box, criterion_group, criterion_main, Criterion};
+use paste::paste;
 use std::{
     collections::{hash_map::RandomState, HashMap},
     hash::{BuildHasher, Hash},
 };
+
+fn name_fn(name: &str, inner: &str, kt: &str, vt: &str) -> String {
+    format!("{}_{}_{}_{}", name, inner, kt, vt)
+}
 
 macro_rules! bench_for {
     ($typ: ident, $k: expr, $v: expr) => {
         bench_for! {$typ, $typ, $k, $v}
     };
     ($kt: ident, $vt: ident, $k: expr, $v: expr) => {
-        paste::paste! {
+        paste! {
             fn [<gen_bench_ $kt:snake _ $vt:snake>]<H>(name: &str, c: &mut Criterion)
             where
                 H: BuildHasher + Default,
@@ -31,7 +36,7 @@ macro_rules! bench_for {
                 };
                 let kt = stringify!{$kt};
                 let vt = stringify!{$vt};
-                let name_fn = |inner: &str| format!("{}_{}_{}_{}", name, inner, kt, vt);
+                let name_fn = |inner: &str| name_fn(name, inner, kt, vt);
                 c.bench_function(
                     &name_fn("insert_noexist"),
                     |b| {
@@ -124,33 +129,29 @@ macro_rules! bench_for {
                 });
             }
 
-            fn [<bench_std_hashmap_ $kt:snake _ $vt:snake>](b: &mut Criterion) {
+            fn [<$kt:snake _ $vt:snake _bench_std_hashmap>](b: &mut Criterion) {
                 [<gen_bench_ $kt:snake _ $vt:snake>]::<RandomState>("std", b)
             }
 
-            fn [<bench_seahash_hashmap_ $kt:snake _ $vt:snake>](b: &mut Criterion) {
+            fn [<$kt:snake _ $vt:snake _bench_seahash_hashmap>](b: &mut Criterion) {
                 [<gen_bench_ $kt:snake _ $vt:snake>]::<SeaHash>("seahash", b)
             }
 
-            fn [<bench_ahash_hashmap_ $kt:snake _ $vt:snake>](b: &mut Criterion) {
+            fn [<$kt:snake _ $vt:snake _bench_ahash_hashmap>](b: &mut Criterion) {
                 [<gen_bench_ $kt:snake _ $vt:snake>]::<ahash::RandomState>("ahash", b)
             }
 
-
             criterion_group!(
                 [<benches_ $kt:snake _ $vt:snake>],
-                [<bench_std_hashmap_ $kt:snake _ $vt:snake>],
-                [<bench_seahash_hashmap_ $kt:snake _ $vt:snake>],
-                [<bench_ahash_hashmap_ $kt:snake _ $vt:snake>]
+                [<$kt:snake _ $vt:snake _bench_std_hashmap>],
+                [<$kt:snake _ $vt:snake _bench_seahash_hashmap>],
+                [<$kt:snake _ $vt:snake _bench_ahash_hashmap>]
             );
         }
     };
 }
 
 macro_rules! bench_table {
-    // (@inner $({$kt: ident, $vt: ident, $k: literal, $v: literal }), + $(,)?) => {
-
-    // };
     ( $({ $kt: ident, $vt: ident, $k: expr, $v: expr }), + $(,)?) => {
         $(
             bench_for!{

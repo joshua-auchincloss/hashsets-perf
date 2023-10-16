@@ -1,4 +1,4 @@
-name: codspeed-benchmarks
+name: benchmarks and docs
 
 on:
   push:
@@ -7,8 +7,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  benchmarks:
+  codspeed:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,3 +33,38 @@ jobs:
         with:
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
+
+  docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup rust toolchain, cache
+        uses: moonrepo/setup-rust@v0
+        with:
+          channel: stable
+          cache-target: release
+
+      - name: Run benchmarks
+        run: cargo bench
+      
+      - name: Process html
+        uses: joshua-auchincloss/criterion-pages
+        with:
+          path: "./docs"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './docs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
