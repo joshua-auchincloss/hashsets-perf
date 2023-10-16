@@ -28,6 +28,13 @@ jobs:
           channel: stable
           cache-target: release
 
+      - id: cache-target
+        name: Cache CI Benchmarks
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./target/criterion
+
       - name: Run benchmarks
         run: cargo bench
       
