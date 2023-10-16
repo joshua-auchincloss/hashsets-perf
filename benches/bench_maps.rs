@@ -14,9 +14,12 @@ macro_rules! bench_for {
             fn [<gen_bench_ $kt:snake _ $vt:snake>]<H>(name: &str, c: &mut Criterion)
             where
                 H: BuildHasher + Default,
+                HashMap<$kt, $vt, H>: Clone
             {
-                let mut h = HashMap::<$kt, $vt, H>::default();
                 let to_insert = $v;
+                let new =  || {
+                    HashMap::<$kt, $vt, H>::default()
+                };
                 let insert = |h: &mut HashMap<$kt, $vt, H>| {
                     h.insert($k, to_insert.clone());
                 };
@@ -29,90 +32,95 @@ macro_rules! bench_for {
                 let kt = stringify!{$kt};
                 let vt = stringify!{$vt};
                 let name_fn = |inner: &str| format!("{}_{}_{}_{}", name, inner, kt, vt);
-                insert(&mut h);
                 c.bench_function(
                     &name_fn("insert_noexist"),
                     |b| {
-                    b.iter_custom(|iters| {
-                        let mut tot = std::time::Duration::from_millis(0);
-                        for _ in 0..iters {
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
                             remove(&mut h);
-                            let start = std::time::Instant::now();
-                            insert(black_box(&mut h));
-                            tot += start.elapsed();
-                        }
-                        tot
-                    })
+                            h
+                        },
+                        |mut this| {
+                            insert(black_box(&mut this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
                 });
                 c.bench_function(
                     &name_fn("insert_exist"),
                     |b| {
-                    b.iter_custom(|iters| {
-                        let mut tot = std::time::Duration::from_millis(0);
-                        insert(&mut h);
-                        for _ in 0..iters {
-                            let start = std::time::Instant::now();
-                            insert(black_box(&mut h));
-                            tot += start.elapsed();
-                        }
-                        tot
-                    })
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            insert(&mut h);
+                            h
+                        },
+                        |mut this| {
+                            insert(black_box(&mut this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
                 });
                 c.bench_function(
                     &name_fn("get_noexist"),
                     |b| {
-                    b.iter_custom(|iters| {
-                        let mut tot = std::time::Duration::from_millis(0);
-                        remove(&mut h);
-                        for _ in 0..iters {
-                            let start = std::time::Instant::now();
-                            get(black_box(&h));
-                            tot += start.elapsed();
-                        }
-                        tot
-                    })
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            remove(&mut h);
+                            h
+                        },
+                        |this| {
+                            get(black_box(&this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
                 });
                 c.bench_function(
                     &name_fn("get_exist"),
                     |b| {
-                    b.iter_custom(|iters| {
-                        let mut tot = std::time::Duration::from_millis(0);
-                        insert(&mut h);
-                        for _ in 0..iters {
-                            let start = std::time::Instant::now();
-                            get(black_box(&h));
-                            tot += start.elapsed();
-                        }
-                        tot
-                    })
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            insert(&mut h);
+                            h
+                        },
+                        |this| {
+                            get(black_box(&this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
                 });
                 c.bench_function(
                     &name_fn("remove_noexist"),
                     |b| {
-                    b.iter_custom(|iters| {
-                        remove(&mut h);
-                        let mut tot = std::time::Duration::from_millis(0);
-                        for _ in 0..iters {
-                            let start = std::time::Instant::now();
-                            remove(black_box(&mut h));
-                            tot += start.elapsed()
-                        }
-                        tot
-                    })
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            remove(&mut h);
+                            h
+                        },
+                        |mut this| {
+                            remove(black_box(&mut this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
                 });
                 c.bench_function(
                     &name_fn("remove_exists"),
                     |b| {
-                    b.iter_custom(|iters| {
-                        let mut tot = std::time::Duration::from_millis(0);
-                        for _ in 0..iters {
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
                             insert(&mut h);
-                            let start = std::time::Instant::now();
-                            remove(black_box(&mut h));
-                            tot += start.elapsed()
-                        }
-                        tot
-                    })
+                            h
+                        },
+                        |mut this| {
+                            remove(black_box(&mut this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
                 });
             }
 

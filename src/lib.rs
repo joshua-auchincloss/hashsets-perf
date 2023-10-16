@@ -1,7 +1,7 @@
 use seahash::SeaHasher;
 use std::{collections::HashMap, hash::BuildHasher};
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 #[repr(transparent)]
 pub struct SeaHash(SeaHasher);
 
