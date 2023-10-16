@@ -129,13 +129,13 @@ macro_rules! bench_for {
                 });
             }
 
-            fn [<$kt:snake _ $vt:snake _bench_std_hashmap>](b: &mut Criterion) {
-                [<gen_bench_ $kt:snake _ $vt:snake>]::<RandomState>("std", b)
-            }
+            // fn [<$kt:snake _ $vt:snake _bench_std_hashmap>](b: &mut Criterion) {
+            //     [<gen_bench_ $kt:snake _ $vt:snake>]::<RandomState>("std", b)
+            // }
 
-            fn [<$kt:snake _ $vt:snake _bench_seahash_hashmap>](b: &mut Criterion) {
-                [<gen_bench_ $kt:snake _ $vt:snake>]::<SeaHash>("seahash", b)
-            }
+            // fn [<$kt:snake _ $vt:snake _bench_seahash_hashmap>](b: &mut Criterion) {
+            //     [<gen_bench_ $kt:snake _ $vt:snake>]::<SeaHash>("seahash", b)
+            // }
 
             fn [<$kt:snake _ $vt:snake _bench_ahash_hashmap>](b: &mut Criterion) {
                 [<gen_bench_ $kt:snake _ $vt:snake>]::<ahash::RandomState>("ahash", b)
@@ -143,8 +143,8 @@ macro_rules! bench_for {
 
             criterion_group!(
                 [<benches_ $kt:snake _ $vt:snake>],
-                [<$kt:snake _ $vt:snake _bench_std_hashmap>],
-                [<$kt:snake _ $vt:snake _bench_seahash_hashmap>],
+                // [<$kt:snake _ $vt:snake _bench_std_hashmap>],
+                // [<$kt:snake _ $vt:snake _bench_seahash_hashmap>],
                 [<$kt:snake _ $vt:snake _bench_ahash_hashmap>]
             );
         }
@@ -215,41 +215,41 @@ const COMPARABLE_KEY: &str = "k";
 const COMPARABLE_SIZED: &str = "12345";
 
 bench_table! {
-    { RawStr, RawStr, COMPARABLE_KEY, COMPARABLE_SIZED},
-    { RawStr, String, COMPARABLE_KEY, COMPARABLE_SIZED.to_string() },
-    { RawStr, usize, COMPARABLE_KEY, 1 },
-    { usize, usize, 1, 42 },
-    { usize, RawStr, 1, COMPARABLE_SIZED },
-    { usize, String, 1, COMPARABLE_SIZED.to_string() },
-    { i32, i32, 1, 42 },
-    { i32, usize, 1, 42 },
-    { i32, RawStr, 1, COMPARABLE_SIZED },
-    { String, String, COMPARABLE_KEY.to_string(), COMPARABLE_SIZED.to_string() },
-    { String, RawStr, COMPARABLE_KEY.to_string(), COMPARABLE_SIZED },
-    {
-        MyKeyValue,
-        MyKeyValue,
-        MyKeyValue::Key(COMPARABLE_KEY.to_string()),
-        MyKeyValue::Value(COMPARABLE_SIZED.to_string())
-    },
-    {
-        MyKeyValue,
-        RawStr,
-        MyKeyValue::Key(COMPARABLE_KEY.to_string()),
-        COMPARABLE_SIZED
-    },
-    {
-        StaticAb,
-        StaticAb,
-        StaticAb::Abc,
-        StaticAb::Def
-    },
-    {
-        StaticAb,
-        RawStr,
-        StaticAb::Abc,
-        COMPARABLE_SIZED
-    },
+    // { RawStr, RawStr, COMPARABLE_KEY, COMPARABLE_SIZED},
+    // { RawStr, String, COMPARABLE_KEY, COMPARABLE_SIZED.to_string() },
+    // { RawStr, usize, COMPARABLE_KEY, 1 },
+    // { usize, usize, 1, 42 },
+    // { usize, RawStr, 1, COMPARABLE_SIZED },
+    // { usize, String, 1, COMPARABLE_SIZED.to_string() },
+    // { i32, i32, 1, 42 },
+    // { i32, usize, 1, 42 },
+    // { i32, RawStr, 1, COMPARABLE_SIZED },
+    // { String, String, COMPARABLE_KEY.to_string(), COMPARABLE_SIZED.to_string() },
+    // { String, RawStr, COMPARABLE_KEY.to_string(), COMPARABLE_SIZED },
+    // {
+    //     MyKeyValue,
+    //     MyKeyValue,
+    //     MyKeyValue::Key(COMPARABLE_KEY.to_string()),
+    //     MyKeyValue::Value(COMPARABLE_SIZED.to_string())
+    // },
+    // {
+    //     MyKeyValue,
+    //     RawStr,
+    //     MyKeyValue::Key(COMPARABLE_KEY.to_string()),
+    //     COMPARABLE_SIZED
+    // },
+    // {
+    //     StaticAb,
+    //     StaticAb,
+    //     StaticAb::Abc,
+    //     StaticAb::Def
+    // },
+    // {
+    //     StaticAb,
+    //     RawStr,
+    //     StaticAb::Abc,
+    //     COMPARABLE_SIZED
+    // },
     {
         StaticAbReprC,
         StaticAbReprC,
