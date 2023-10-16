@@ -7,7 +7,7 @@ use std::{
 };
 
 fn name_fn(name: &str, inner: &str, kt: &str, vt: &str) -> String {
-    format!("{}_{}_{}_{}", name, inner, kt, vt)
+    format!("{} {} key type: {} value type: {}", name, inner, kt, vt)
 }
 
 macro_rules! bench_for {
@@ -38,7 +38,7 @@ macro_rules! bench_for {
                 let vt = stringify!{$vt};
                 let name_fn = |inner: &str| name_fn(name, inner, kt, vt);
                 c.bench_function(
-                    &name_fn("insert_noexist"),
+                    &name_fn("insert[!exists]"),
                     |b| {
                     b.iter_batched_ref(
                         || {
@@ -52,90 +52,90 @@ macro_rules! bench_for {
                         codspeed_criterion_compat::BatchSize::SmallInput,
                     )
                 });
-                // c.bench_function(
-                //     &name_fn("insert_exist"),
-                //     |b| {
-                //     b.iter_batched_ref(
-                //         || {
-                //             let mut h = new();
-                //             insert(&mut h);
-                //             h
-                //         },
-                //         |mut this| {
-                //             insert(black_box(&mut this))
-                //         },
-                //         codspeed_criterion_compat::BatchSize::SmallInput,
-                //     )
-                // });
-                // c.bench_function(
-                //     &name_fn("get_noexist"),
-                //     |b| {
-                //     b.iter_batched_ref(
-                //         || {
-                //             let mut h = new();
-                //             remove(&mut h);
-                //             h
-                //         },
-                //         |this| {
-                //             get(black_box(&this))
-                //         },
-                //         codspeed_criterion_compat::BatchSize::SmallInput,
-                //     )
-                // });
-                // c.bench_function(
-                //     &name_fn("get_exist"),
-                //     |b| {
-                //     b.iter_batched_ref(
-                //         || {
-                //             let mut h = new();
-                //             insert(&mut h);
-                //             h
-                //         },
-                //         |this| {
-                //             get(black_box(&this))
-                //         },
-                //         codspeed_criterion_compat::BatchSize::SmallInput,
-                //     )
-                // });
-                // c.bench_function(
-                //     &name_fn("remove_noexist"),
-                //     |b| {
-                //     b.iter_batched_ref(
-                //         || {
-                //             let mut h = new();
-                //             remove(&mut h);
-                //             h
-                //         },
-                //         |mut this| {
-                //             remove(black_box(&mut this))
-                //         },
-                //         codspeed_criterion_compat::BatchSize::SmallInput,
-                //     )
-                // });
-                // c.bench_function(
-                //     &name_fn("remove_exists"),
-                //     |b| {
-                //     b.iter_batched_ref(
-                //         || {
-                //             let mut h = new();
-                //             insert(&mut h);
-                //             h
-                //         },
-                //         |mut this| {
-                //             remove(black_box(&mut this))
-                //         },
-                //         codspeed_criterion_compat::BatchSize::SmallInput,
-                //     )
-                // });
+                c.bench_function(
+                    &name_fn("insert[exists]"),
+                    |b| {
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            insert(&mut h);
+                            h
+                        },
+                        |mut this| {
+                            insert(black_box(&mut this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
+                });
+                c.bench_function(
+                    &name_fn("get[!exists]"),
+                    |b| {
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            remove(&mut h);
+                            h
+                        },
+                        |this| {
+                            get(black_box(&this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
+                });
+                c.bench_function(
+                    &name_fn("get[exists]"),
+                    |b| {
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            insert(&mut h);
+                            h
+                        },
+                        |this| {
+                            get(black_box(&this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
+                });
+                c.bench_function(
+                    &name_fn("remove[!exists]"),
+                    |b| {
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            remove(&mut h);
+                            h
+                        },
+                        |mut this| {
+                            remove(black_box(&mut this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
+                });
+                c.bench_function(
+                    &name_fn("remove[exists]"),
+                    |b| {
+                    b.iter_batched_ref(
+                        || {
+                            let mut h = new();
+                            insert(&mut h);
+                            h
+                        },
+                        |mut this| {
+                            remove(black_box(&mut this))
+                        },
+                        codspeed_criterion_compat::BatchSize::SmallInput,
+                    )
+                });
             }
 
-            // fn [<$kt:snake _ $vt:snake _bench_std_hashmap>](b: &mut Criterion) {
-            //     [<gen_bench_ $kt:snake _ $vt:snake>]::<RandomState>("std", b)
-            // }
+            fn [<$kt:snake _ $vt:snake _bench_std_hashmap>](b: &mut Criterion) {
+                [<gen_bench_ $kt:snake _ $vt:snake>]::<RandomState>("std", b)
+            }
 
-            // fn [<$kt:snake _ $vt:snake _bench_seahash_hashmap>](b: &mut Criterion) {
-            //     [<gen_bench_ $kt:snake _ $vt:snake>]::<SeaHash>("seahash", b)
-            // }
+            fn [<$kt:snake _ $vt:snake _bench_seahash_hashmap>](b: &mut Criterion) {
+                [<gen_bench_ $kt:snake _ $vt:snake>]::<SeaHash>("seahash", b)
+            }
 
             fn [<$kt:snake _ $vt:snake _bench_ahash_hashmap>](b: &mut Criterion) {
                 [<gen_bench_ $kt:snake _ $vt:snake>]::<ahash::RandomState>("ahash", b)
@@ -143,8 +143,8 @@ macro_rules! bench_for {
 
             criterion_group!(
                 [<benches_ $kt:snake _ $vt:snake>],
-                // [<$kt:snake _ $vt:snake _bench_std_hashmap>],
-                // [<$kt:snake _ $vt:snake _bench_seahash_hashmap>],
+                [<$kt:snake _ $vt:snake _bench_std_hashmap>],
+                [<$kt:snake _ $vt:snake _bench_seahash_hashmap>],
                 [<$kt:snake _ $vt:snake _bench_ahash_hashmap>]
             );
         }
@@ -215,41 +215,47 @@ const COMPARABLE_KEY: &str = "k";
 const COMPARABLE_SIZED: &str = "12345";
 
 bench_table! {
-    // { RawStr, RawStr, COMPARABLE_KEY, COMPARABLE_SIZED},
-    // { RawStr, String, COMPARABLE_KEY, COMPARABLE_SIZED.to_string() },
-    // { RawStr, usize, COMPARABLE_KEY, 1 },
-    // { usize, usize, 1, 42 },
-    // { usize, RawStr, 1, COMPARABLE_SIZED },
-    // { usize, String, 1, COMPARABLE_SIZED.to_string() },
-    // { i32, i32, 1, 42 },
-    // { i32, usize, 1, 42 },
-    // { i32, RawStr, 1, COMPARABLE_SIZED },
-    // { String, String, COMPARABLE_KEY.to_string(), COMPARABLE_SIZED.to_string() },
-    // { String, RawStr, COMPARABLE_KEY.to_string(), COMPARABLE_SIZED },
-    // {
-    //     MyKeyValue,
-    //     MyKeyValue,
-    //     MyKeyValue::Key(COMPARABLE_KEY.to_string()),
-    //     MyKeyValue::Value(COMPARABLE_SIZED.to_string())
-    // },
-    // {
-    //     MyKeyValue,
-    //     RawStr,
-    //     MyKeyValue::Key(COMPARABLE_KEY.to_string()),
-    //     COMPARABLE_SIZED
-    // },
-    // {
-    //     StaticAb,
-    //     StaticAb,
-    //     StaticAb::Abc,
-    //     StaticAb::Def
-    // },
-    // {
-    //     StaticAb,
-    //     RawStr,
-    //     StaticAb::Abc,
-    //     COMPARABLE_SIZED
-    // },
+    { RawStr, RawStr, COMPARABLE_KEY, COMPARABLE_SIZED},
+    { RawStr, String, COMPARABLE_KEY, COMPARABLE_SIZED.to_string() },
+    { RawStr, usize, COMPARABLE_KEY, 1 },
+    { usize, usize, 1, 42 },
+    { usize, RawStr, 1, COMPARABLE_SIZED },
+    { usize, String, 1, COMPARABLE_SIZED.to_string() },
+    { i32, i32, 1, 42 },
+    { i32, usize, 1, 42 },
+    { i32, RawStr, 1, COMPARABLE_SIZED },
+    { String, String, COMPARABLE_KEY.to_string(), COMPARABLE_SIZED.to_string() },
+    { String, RawStr, COMPARABLE_KEY.to_string(), COMPARABLE_SIZED },
+    {
+        MyKeyValue,
+        MyKeyValue,
+        MyKeyValue::Key(COMPARABLE_KEY.to_string()),
+        MyKeyValue::Value(COMPARABLE_SIZED.to_string())
+    },
+    {
+        MyKeyValue,
+        RawStr,
+        MyKeyValue::Key(COMPARABLE_KEY.to_string()),
+        COMPARABLE_SIZED
+    },
+    {
+        StaticAb,
+        StaticAb,
+        StaticAb::Abc,
+        StaticAb::Def
+    },
+    {
+        StaticAb,
+        RawStr,
+        StaticAb::Abc,
+        COMPARABLE_SIZED
+    },
+    {
+        StaticAb,
+        String,
+        StaticAb::Abc,
+        COMPARABLE_SIZED.to_string()
+    },
     {
         StaticAbReprC,
         StaticAbReprC,
