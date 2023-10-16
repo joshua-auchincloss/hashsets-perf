@@ -12,8 +12,11 @@ In Scope:
 
 - `std`
 - [`ahash`]
+- [`fnv`]
 - [`seahash`]
 
 [`ahash`]: https://github.com/tkaitchuck/aHash
 [`seahash`]: https://gitlab.redox-os.org/redox-os/seahash
+[`fnv`]: https://crates.io/crates/fnv
+[`rustc-hash`]: https://github.com/rust-lang/rustc-hash
 [benchmarks]: https://joshua-auchincloss.github.io/hashsets-perf
