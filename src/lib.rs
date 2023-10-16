@@ -1,11 +1,11 @@
 use codspeed_criterion_compat::{measurement::WallTime, BenchmarkGroup, Criterion, SamplingMode};
 use rustc_hash::FxHasher;
 use seahash::SeaHasher;
-use std::{collections::HashMap, hash::BuildHasher, time::Duration};
+use std::{hash::BuildHasher, time::Duration};
 
 #[derive(Default, Clone)]
 #[repr(transparent)]
-pub struct SeaHash(SeaHasher);
+pub struct SeaHash;
 
 impl SeaHash {
     #[inline(always)]
@@ -21,11 +21,9 @@ impl BuildHasher for SeaHash {
     }
 }
 
-pub type SeaHashMap<K, V> = HashMap<K, V, SeaHash>;
-
 #[derive(Default)]
 #[repr(transparent)]
-pub struct RustC(FxHasher);
+pub struct RustC;
 
 impl RustC {
     #[inline(always)]
@@ -35,9 +33,9 @@ impl RustC {
 }
 
 impl BuildHasher for RustC {
-    type Hasher = SeaHasher;
+    type Hasher = FxHasher;
     fn build_hasher(&self) -> Self::Hasher {
-        SeaHasher::new()
+        FxHasher::default()
     }
 }
 
